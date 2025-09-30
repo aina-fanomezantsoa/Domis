@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domis</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="p-10 lg:px-20 flex justify-between items-center">
+        <h1 class="text-3xl font-black">Domis<span class="text-red-500">.</span></h1>
+        <div class="flex gap-5">
+            <button class="p-2 px-6 font-bold rounded-xl">
+                Inscription
+            </button>
+            <button class="p-2 px-6 bg-blue-400 text-white font-bold rounded-xl" id="connexion">
+                Connexion
+            </button>
+        </div>
+    </header>
+    <section id="blurElement">
+        <section class="hidden px-20 py-10 w-2/3 lg:block">
+            <h1 class="font-bold text-5xl">🏡Trouvez votre appartement idéal en quelques clics!</h1>
+        </section>
+        <section class="w-full my-7 mt-4 px-10 lg:px-20">
+            <div class="w-full bg-blue-100 flex justify-between items-center rounded-full px-7 py-5 gap-2">
+                <input type="text" placeholder="Recherche" class="w-full bg-transparent focus:outline-none focus:border-none">
+                <ion-icon name="search" class="text-3xl"></ion-icon>
+            </div>
+        </section>
+        <section class="w-full px-10 lg:px-5 py-5 flex flex-wrap justify-center gap-10 lg:gap-5" id="cards">
+            <div class="shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover" style="background-image: linear-gradient(to top, #000000, #ffffff00), url('public/appart.jpeg')">
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: 150000Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2>Cartier</h2>
+                            <h2>Address</h2>
+                        </div>
+                        <div class="flex gap-7 items-center">
+                            <div class="px-7 py-2 border-r-2 border-gray-500">
+                                <h1>Taille</h1>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <h1>N</h1>
+                                <h2>Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover" style="background-image: linear-gradient(to top, #000000, #ffffff00), url('public/maison2.jpeg')">
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: 150000Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2>Cartier</h2>
+                            <h2>Address</h2>
+                        </div>
+                        <div class="flex gap-7 items-center">
+                            <div class="px-7 py-2 border-r-2 border-gray-500">
+                                <h1>Taille</h1>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <h1>N</h1>
+                                <h2>Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover" style="background-image: linear-gradient(to top, #000000, #ffffff00), url('public/maison.jpeg')">
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: 150000Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2>Cartier</h2>
+                            <h2>Address</h2>
+                        </div>
+                        <div class="flex gap-7 items-center">
+                            <div class="px-7 py-2 border-r-2 border-gray-500">
+                                <h1>Taille</h1>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <h1>N</h1>
+                                <h2>Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover" style="background-image: linear-gradient(to top, #000000, #ffffff00), url('public/maison1.jpeg')">
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: 150000Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2>Cartier</h2>
+                            <h2>Address</h2>
+                        </div>
+                        <div class="flex gap-7 items-center">
+                            <div class="px-7 py-2 border-r-2 border-gray-500">
+                                <h1>Taille</h1>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <h1>N</h1>
+                                <h2>Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover" style="background-image: linear-gradient(to top, #000000, #ffffff00), url('public/maison.jpeg')">
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: 150000Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2>Cartier</h2>
+                            <h2>Address</h2>
+                        </div>
+                        <div class="flex gap-7 items-center">
+                            <div class="px-7 py-2 border-r-2 border-gray-500">
+                                <h1>Taille</h1>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <h1>N</h1>
+                                <h2>Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover" style="background-image: linear-gradient(to top, #000000, #ffffff00), url('public/appart.jpeg')">
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: 150000Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2>Cartier</h2>
+                            <h2>Address</h2>
+                        </div>
+                        <div class="flex gap-7 items-center">
+                            <div class="px-7 py-2 border-r-2 border-gray-500">
+                                <h1>Taille</h1>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <h1>N</h1>
+                                <h2>Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    
+    
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
