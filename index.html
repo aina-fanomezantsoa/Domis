@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="p-10 lg:px-40 flex justify-between items-center">
-        <h1 class="text-3xl font-black">Domis<span class="text-red-500">.</span></h1>
+        <h1 class="text-3xl font-black">Domis<span class="text-blue-500">.</span></h1>
         <div class="flex gap-5">
             <button class="p-2 px-6 font-bold rounded-xl">
                 Inscription
@@ -23,10 +23,23 @@
             <h1 class="font-bold text-5xl">🏡Trouvez votre appartement idéal en quelques clics!</h1>
         </section>
         <section class="z-40 sticky top-0 bg-white bg-opacity-80 backdrop-filter backdrop-blur-lg w-full py-7 mt-4 px-10 lg:px-40">
-            <div class=" w-full bg-blue-100 flex justify-between items-center rounded-full px-7 py-5 gap-2">
-                <input type="text" placeholder="Recherche" class="w-full bg-transparent focus:outline-none focus:border-none">
-                <ion-icon name="search" class="text-3xl"></ion-icon>
+            <div class="relative">
+                <div class=" w-full bg-blue-100 flex justify-between items-center rounded-full px-7 py-5 gap-2">
+                    <input type="text" placeholder="Recherche" class="w-full bg-transparent focus:outline-none focus:border-none" id="searchBar">
+                    <ion-icon name="search" class="text-3xl"></ion-icon>
+                </div>
+                <div class="hidden absolute z-40 bg-blue-100 top-20 w-full p-10 rounded-2xl" id="searchTab">
+                    <div class="flex justify-between items-center border-b-2 border-gray-400 pb-3">
+                        <h1 class="font-bold text-lg">Resultat</h1>
+                        <button class="text-3xl" id="closeBtn">&times;</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 mt-2 hover:bg-blue-50 rounded-lg" id="result">
+                        <h2 class="font-medium text-xl">Text</h2>
+                        <ion-icon name="arrow-forward-outline" class="text-xl"></ion-icon>
+                    </div>
+                </div>
             </div>
+            
             <div class="my-5 mb-0 w-full flex justify-between gap-28">
                 <select name="" id="Filter" class="apparence-none bg-transparent lg:bg-blue-400 rounded-lg px-3 py-2 font-bold text-black lg:text-white focus:outline-none focus:none focus:ring-none">
                     <option value="">Filter</option>
