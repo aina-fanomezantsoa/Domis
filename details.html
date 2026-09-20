@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de l'annonce - Domis</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <header class="p-10 lg:px-40 flex justify-between items-center bg-white shadow-sm">
+        <h1 class="text-3xl font-black">Domis<span class="text-blue-500">.</span></h1>
+        <a href="index.html" class="text-blue-500 font-bold">Retour à l'accueil</a>
+    </header>
+
+    <main class="px-10 lg:px-40 py-10" id="detailsContainer">
+        <!-- Contenu injecté par details.js -->
+        <div class="text-center">Chargement...</div>
+    </main>
+
+    <script type="module" src="supabase.js"></script>
+    <script type="module" src="details.js"></script>
+</body>
+</html>

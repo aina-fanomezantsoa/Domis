@@ -1,5 +1,7 @@
 import { supabase } from './supabase.js';
 
+console.log("Script chargé");
+
 const cards = document.getElementById("cards");
 const blurElement = document.getElementById("blurElement");
 const searchTab = document.getElementById("searchTab");
@@ -23,23 +25,34 @@ const addressInput = document.getElementById('address');
 
 let isLoginMode = true;
 
+// Fonction pour verrouiller/déverrouiller le scroll
+function setScrollLock(locked) {
+    document.body.style.overflow = locked ? 'hidden' : 'auto';
+}
+
 // Délégation d'événements pour le header
 authContainer.addEventListener('click', (e) => {
     if (e.target.id === 'inscription') {
         isLoginMode = false;
         updateAuthUI();
         authModal.classList.remove('hidden');
+        setScrollLock(true);
     } else if (e.target.id === 'connexion') {
         isLoginMode = true;
         updateAuthUI();
         authModal.classList.remove('hidden');
+        setScrollLock(true);
     } else if (e.target.id === 'profilBtn') {
         profileModal.classList.remove('hidden');
+        setScrollLock(true);
     } else if (e.target.id === 'logoutBtn') {
         supabase.auth.signOut();
         location.reload();
     }
 });
+
+// Ajout pour fermer le profil
+document.getElementById('profileModal').querySelector('button[onclick*="hidden"]').addEventListener('click', () => setScrollLock(false));
 
 function updateAuthUI() {
     authTitle.innerText = isLoginMode ? "Connexion" : "Inscription";
@@ -93,14 +106,19 @@ document.addEventListener('click', async (e) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             postModal.classList.remove('hidden');
+            setScrollLock(true);
         } else {
             alert("Veuillez vous connecter pour ajouter une annonce.");
             isLoginMode = true;
             updateAuthUI();
             authModal.classList.remove('hidden');
+            setScrollLock(true);
         }
     }
 });
+
+const postSize = document.getElementById('postSize');
+const postRooms = document.getElementById('postRooms');
 
 submitPostBtn.addEventListener('click', async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -110,7 +128,7 @@ submitPostBtn.addEventListener('click', async () => {
     if (!file) { alert("Veuillez choisir une image"); return; }
 
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const fileName = `${Date.now()}.${fileExt}`;
     const { data: uploadData, error: uploadError } = await supabase.storage
         .from('annonces')
         .upload(fileName, file);
@@ -124,6 +142,8 @@ submitPostBtn.addEventListener('click', async () => {
         title: postTitle.value,
         price: postPrice.value,
         location: postLocation.value,
+        size: postSize.value,
+        rooms: postRooms.value,
         image_url: publicUrlData.publicUrl
     });
 
@@ -131,38 +151,66 @@ submitPostBtn.addEventListener('click', async () => {
     else { 
         alert("Annonce publiée !"); 
         postModal.classList.add('hidden');
+        setScrollLock(false);
+        // Réinitialisation des champs
+        postTitle.value = "";
+        postPrice.value = "";
+        postLocation.value = "";
+        postSize.value = "";
+        postRooms.value = "";
+        postImage.value = "";
+        postGallery.value = "";
         loadAnnonces();
     }
 });
 
 async function loadAnnonces() {
-    const { data: annonces, error } = await supabase.from('annonces').select('*');
-    if (error) {
-        console.error("Erreur chargement:", error);
-        return;
-    }
+    try {
+        const { data: annonces, error } = await supabase
+            .from('annonces')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error("Erreur Supabase:", error);
+            if (error.code === 'PGRST116' || error.message.includes('not found')) {
+                alert("La table 'annonces' n'existe pas encore. Avez-vous exécuté le script SQL dans le dashboard Supabase ?");
+            } else {
+                alert("Erreur lors du chargement des annonces: " + error.message);
+            }
+            return;
+        }
 
-    cards.innerHTML = "";
-    annonces.forEach(annonce => {
-        const card = document.createElement("div");
-        card.className = "shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover cursor-pointer";
-        card.style.backgroundImage = `linear-gradient(to top, #000000, #ffffff00), url('${annonce.image_url}')`;
-        card.innerHTML = `
-            <div class="w-full flex justify-end text-white">
-                <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
-                    <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
-                </div>
-            </div>
-            <div class="flex flex-col gap-2 text-white">
-                <h1 class="font-bold text-2xl">Loyer: ${annonce.price} Ar</h1>
-                <div class="flex justify-between font-bold">
-                    <div>
-                        <h2>${annonce.location}</h2>
-                        <h2 class="text-sm font-medium opacity-80">${annonce.title}</h2>
+        cards.innerHTML = "";
+        annonces.forEach(annonce => {
+            const card = document.createElement("div");
+            card.className = "shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover cursor-pointer hover:scale-[1.02] transition-transform";
+            card.style.backgroundImage = `linear-gradient(to top, #000000, #ffffff00), url('${annonce.image_url}')`;
+            card.innerHTML = `
+                <div class="w-full flex justify-end text-white">
+                    <div class="p-2 bg-blue-100 bg-opacity-20 flex items-center justify-center rounded-full favorisBtn">
+                        <ion-icon name="heart-outline" class="text-3xl favoris"></ion-icon>
                     </div>
                 </div>
-            </div>
-        `;
+                <div class="flex flex-col gap-2 text-white">
+                    <h1 class="font-bold text-2xl">Loyer: ${annonce.price} Ar</h1>
+                    <div class="flex justify-between">
+                        <div>
+                            <h2 class="font-bold">${annonce.location}</h2>
+                            <h2 class="text-sm opacity-80">${annonce.title}</h2>
+                        </div>
+                        <div class="flex gap-4 items-center text-sm">
+                            <div class="px-3 border-r border-gray-400">
+                                <h1>${annonce.size || 'N/A'}</h1>
+                            </div>
+                            <div class="flex flex-col items-center leading-tight">
+                                <h1>${annonce.rooms || '0'}</h1>
+                                <h2 class="text-[10px]">Salles</h2>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            `;
         card.addEventListener('click', (e) => {
             if (e.target.closest('.favorisBtn')) {
                 e.stopPropagation();
@@ -171,19 +219,16 @@ async function loadAnnonces() {
                 icon.style.color = icon.name === "heart" ? "#f14343ff" : "white";
                 return;
             }
-            showDetails(annonce);
+            window.location.href = `details.html?id=${annonce.id}`;
         });
-        cards.appendChild(card);
-    });
+            cards.appendChild(card);
+        });
+    } catch (err) {
+        console.error("Erreur critique:", err);
+    }
 }
 
-function showDetails(annonce) {
-    document.getElementById('detailTitle').innerText = annonce.title;
-    document.getElementById('detailPrice').innerText = `Loyer: ${annonce.price} Ar`;
-    document.getElementById('detailLocation').innerText = `Lieu: ${annonce.location}`;
-    document.getElementById('gallery').innerHTML = `<img src="${annonce.image_url}" class="w-full rounded-xl">`;
-    detailsModal.classList.remove('hidden');
-}
+// Suppression de la fonction showDetails devenue inutile
 
 // Profil
 editProfileBtn.addEventListener('click', () => {
