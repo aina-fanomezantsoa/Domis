@@ -16,7 +16,8 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const toggleAuth = document.getElementById('toggleAuth');
 const authTitle = document.getElementById('authTitle');
-const authContainer = document.querySelector('.flex.gap-5');
+// Modification pour utiliser l'ID 'authContainer' défini dans le HTML
+const authContainer = document.getElementById('authContainer');
 const profileModal = document.getElementById('profileModal');
 const editProfileBtn = document.getElementById('editProfileBtn');
 const saveProfileBtn = document.getElementById('saveProfileBtn');
@@ -184,7 +185,8 @@ async function loadAnnonces() {
         cards.innerHTML = "";
         annonces.forEach(annonce => {
             const card = document.createElement("div");
-            card.className = "shadow-lg w-full lg:w-96 flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover cursor-pointer hover:scale-[1.02] transition-transform";
+            // Suppression de w-96 pour laisser le grid gérer la largeur
+            card.className = "shadow-lg w-full flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover cursor-pointer hover:scale-[1.02] transition-transform";
             card.style.backgroundImage = `linear-gradient(to top, #000000, #ffffff00), url('${annonce.image_url}')`;
             card.innerHTML = `
                 <div class="w-full flex justify-end text-white">
