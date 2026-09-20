@@ -10,7 +10,7 @@
     <header class="p-10 lg:px-40 flex justify-between items-center">
         <h1 class="text-3xl font-black">Domis<span class="text-blue-500">.</span></h1>
         <div class="flex gap-5">
-            <button class="p-2 px-6 font-bold rounded-xl">
+            <button class="p-2 px-6 font-bold rounded-xl" id="inscription">
                 Inscription
             </button>
             <button class="p-2 px-6 bg-blue-400 text-white font-bold rounded-xl" id="connexion">
@@ -60,7 +60,7 @@
                 <select name="" id="" class="hidden lg:block bg-transparent focus:outline-none focus:none focus:ring-none">
                     <option value="">Nombre Salle</option>
                 </select>
-                <button class="w-full flex items-center justify-center gap-2 bg-blue-400 rounded-lg px-3 py-2 font-bold text-white">Ajouter<ion-icon name="add-circle"></ion-icon></button>
+                <button id="addPostBtn" class="w-full flex items-center justify-center gap-2 bg-blue-400 rounded-lg px-3 py-2 font-bold text-white">Ajouter<ion-icon name="add-circle"></ion-icon></button>
             </div>
         </section>
         <section class="w-full px-10 lg:px-5 py-5 flex flex-wrap justify-center gap-10 lg:gap-5" id="cards">
@@ -191,7 +191,66 @@
             </div>
         </section>
     </section>
-    
+
+    <!-- Modale Authentification -->
+    <div id="authModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-10 rounded-3xl w-1/3">
+            <h2 class="text-2xl font-bold mb-5" id="authTitle">Connexion</h2>
+            <input type="email" id="email" placeholder="Email" class="w-full p-3 border rounded-lg mb-3">
+            <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3 border rounded-lg mb-5">
+            <button id="authBtn" class="w-full bg-blue-400 text-white font-bold p-3 rounded-lg">Valider</button>
+            <p class="text-center mt-3 cursor-pointer text-blue-500" id="toggleAuth">Pas encore de compte ? S'inscrire</p>
+            <button onclick="document.getElementById('authModal').classList.add('hidden')" class="mt-3 w-full text-gray-500">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modale Création Annonce -->
+    <div id="postModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-10 rounded-3xl w-1/3">
+            <h2 class="text-2xl font-bold mb-5">Nouvelle Annonce</h2>
+            <input type="text" id="postTitle" placeholder="Titre" class="w-full p-3 border rounded-lg mb-3">
+            <input type="number" id="postPrice" placeholder="Loyer" class="w-full p-3 border rounded-lg mb-3">
+            <input type="text" id="postLocation" placeholder="Cartier" class="w-full p-3 border rounded-lg mb-3">
+            <input type="file" id="postImage" accept="image/*" class="w-full p-3 border rounded-lg mb-5">
+            <button id="submitPostBtn" class="w-full bg-blue-400 text-white font-bold p-3 rounded-lg">Publier</button>
+            <button onclick="document.getElementById('postModal').classList.add('hidden')" class="mt-3 w-full text-gray-500">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modale Détails Annonce -->
+    <div id="detailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-10 rounded-3xl w-1/2">
+            <h2 class="text-2xl font-bold mb-5" id="detailTitle"></h2>
+            <div id="gallery" class="flex gap-2 overflow-x-auto mb-5"></div>
+            <p id="detailPrice" class="text-lg font-bold"></p>
+            <p id="detailLocation" class="text-gray-600"></p>
+            <button onclick="document.getElementById('detailsModal').classList.add('hidden')" class="mt-5 w-full text-gray-500">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modale Profil -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-10 rounded-3xl w-1/3 relative">
+            <h2 class="text-2xl font-bold mb-5">Mon Profil</h2>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <img src="https://via.placeholder.com/100" class="w-20 h-20 rounded-full" id="profilePic">
+                    <button id="editProfileBtn" class="text-blue-500 text-xl"><ion-icon name="create-outline"></ion-icon></button>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700">Username</label>
+                    <input type="text" id="username" class="w-full p-2 border rounded-lg" disabled>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700">Adresse</label>
+                    <input type="text" id="address" class="w-full p-2 border rounded-lg" disabled>
+                </div>
+            </div>
+            <button id="saveProfileBtn" class="hidden mt-5 w-full bg-green-500 text-white font-bold p-3 rounded-lg">Sauvegarder</button>
+            <button onclick="document.getElementById('profileModal').classList.add('hidden')" class="mt-5 w-full text-gray-500">Fermer</button>
+        </div>
+    </div>
+
     
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
