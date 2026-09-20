@@ -19,10 +19,7 @@ const authTitle = document.getElementById('authTitle');
 // Modification pour utiliser l'ID 'authContainer' défini dans le HTML
 const authContainer = document.getElementById('authContainer');
 const profileModal = document.getElementById('profileModal');
-const editProfileBtn = document.getElementById('editProfileBtn');
-const saveProfileBtn = document.getElementById('saveProfileBtn');
-const usernameInput = document.getElementById('username');
-const addressInput = document.getElementById('address');
+// Suppression des variables profile supprimées du HTML
 
 let isLoginMode = true;
 
@@ -33,27 +30,25 @@ function setScrollLock(locked) {
 
 // Délégation d'événements pour le header
 authContainer.addEventListener('click', (e) => {
-    if (e.target.id === 'inscription') {
+    // Vérifier si l'utilisateur a cliqué sur le bouton ou sur l'icône/le span à l'intérieur
+    const target = e.target.closest('button, a');
+    if (!target) return;
+
+    if (target.id === 'inscription') {
         isLoginMode = false;
         updateAuthUI();
         authModal.classList.remove('hidden');
         setScrollLock(true);
-    } else if (e.target.id === 'connexion') {
+    } else if (target.id === 'connexion') {
         isLoginMode = true;
         updateAuthUI();
         authModal.classList.remove('hidden');
         setScrollLock(true);
-    } else if (e.target.id === 'profilBtn') {
-        profileModal.classList.remove('hidden');
-        setScrollLock(true);
-    } else if (e.target.id === 'logoutBtn') {
+    } else if (target.id === 'logoutBtn') {
         supabase.auth.signOut();
         location.reload();
     }
 });
-
-// Ajout pour fermer le profil
-document.getElementById('profileModal').querySelector('button[onclick*="hidden"]').addEventListener('click', () => setScrollLock(false));
 
 function updateAuthUI() {
     authTitle.innerText = isLoginMode ? "Connexion" : "Inscription";
@@ -83,13 +78,23 @@ authBtn.addEventListener('click', async () => {
 supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
         authContainer.innerHTML = `
-            <button class="p-2 px-6 font-bold rounded-xl" id="profilBtn">Profil</button>
-            <button class="p-2 px-6 bg-red-400 text-white font-bold rounded-xl" id="logoutBtn">Déconnexion</button>
+            <a href="profile.html" class="group flex items-center p-2 bg-gray-100 rounded-full transition-all duration-300" id="profilBtn">
+                <ion-icon name="person" class="text-2xl font-bold"></ion-icon>
+                <span class="hidden group-hover:block ml-2 font-bold whitespace-nowrap">Profil</span>
+            </a>
+            <button class="group flex items-center p-2 bg-red-400 text-white rounded-full transition-all duration-300" id="logoutBtn">
+                <ion-icon name="log-out" class="text-2xl font-bold"></ion-icon>
+                <span class="hidden group-hover:block ml-2 font-bold whitespace-nowrap">Déconnexion</span>
+            </button>
         `;
     } else {
         authContainer.innerHTML = `
-            <button class="p-2 px-6 font-bold rounded-xl" id="inscription">Inscription</button>
-            <button class="p-2 px-6 bg-blue-400 text-white font-bold rounded-xl" id="connexion">Connexion</button>
+            <button class="p-2 px-6 font-bold rounded-xl" id="inscription">
+                Inscription
+            </button>
+            <button class="p-2 px-6 bg-blue-400 text-white font-bold rounded-xl" id="connexion">
+                Connexion
+            </button>
         `;
     }
 });
@@ -125,48 +130,61 @@ submitPostBtn.addEventListener('click', async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { alert("Connectez-vous pour publier !"); return; }
 
+    // Si on modifie, on n'est pas obligé de changer l'image
+    let imageUrl = null;
     const file = postImage.files[0];
-    if (!file) { alert("Veuillez choisir une image"); return; }
+    
+    if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('annonces')
+            .upload(fileName, file);
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}.${fileExt}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('annonces')
-        .upload(fileName, file);
+        if (uploadError) { alert("Erreur upload: " + uploadError.message); return; }
+        const { data: publicUrlData } = supabase.storage.from('annonces').getPublicUrl(fileName);
+        imageUrl = publicUrlData.publicUrl;
+    }
 
-    if (uploadError) { alert("Erreur upload: " + uploadError.message); return; }
-
-    const { data: publicUrlData } = supabase.storage.from('annonces').getPublicUrl(fileName);
-
-    const { error: dbError } = await supabase.from('annonces').insert({
+    const payload = {
         user_id: user.id,
         title: postTitle.value,
         price: postPrice.value,
         location: postLocation.value,
         size: postSize.value,
-        rooms: postRooms.value,
-        image_url: publicUrlData.publicUrl
-    });
+        rooms: postRooms.value
+    };
+    if (imageUrl) payload.image_url = imageUrl;
+
+    let dbError;
+    if (editingAnnonceId) {
+        const { error } = await supabase.from('annonces').update(payload).eq('id', editingAnnonceId);
+        dbError = error;
+    } else {
+        const { error } = await supabase.from('annonces').insert(payload);
+        dbError = error;
+    }
 
     if (dbError) { alert("Erreur BD: " + dbError.message); }
     else { 
-        alert("Annonce publiée !"); 
+        alert(editingAnnonceId ? "Annonce mise à jour !" : "Annonce publiée !"); 
         postModal.classList.add('hidden');
         setScrollLock(false);
-        // Réinitialisation des champs
+        // Réinitialisation
         postTitle.value = "";
         postPrice.value = "";
         postLocation.value = "";
         postSize.value = "";
         postRooms.value = "";
         postImage.value = "";
-        postGallery.value = "";
+        editingAnnonceId = null;
         loadAnnonces();
     }
 });
 
 async function loadAnnonces() {
     try {
+        const { data: { user } } = await supabase.auth.getUser();
         const { data: annonces, error } = await supabase
             .from('annonces')
             .select('*')
@@ -185,7 +203,7 @@ async function loadAnnonces() {
         cards.innerHTML = "";
         annonces.forEach(annonce => {
             const card = document.createElement("div");
-            // Suppression de w-96 pour laisser le grid gérer la largeur
+            
             card.className = "shadow-lg w-full flex flex-col justify-between p-7 h-96 rounded-3xl bg-center bg-cover cursor-pointer hover:scale-[1.02] transition-transform";
             card.style.backgroundImage = `linear-gradient(to top, #000000, #ffffff00), url('${annonce.image_url}')`;
             card.innerHTML = `
@@ -213,16 +231,17 @@ async function loadAnnonces() {
                     </div>
                 </div>
             `;
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('.favorisBtn')) {
-                e.stopPropagation();
-                const icon = e.target.closest('.favorisBtn').querySelector('ion-icon');
-                icon.name = icon.name === "heart" ? "heart-outline" : "heart";
-                icon.style.color = icon.name === "heart" ? "#f14343ff" : "white";
-                return;
-            }
-            window.location.href = `details.html?id=${annonce.id}`;
-        });
+            
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.favorisBtn')) {
+                    e.stopPropagation();
+                    const icon = e.target.closest('.favorisBtn').querySelector('ion-icon');
+                    icon.name = icon.name === "heart" ? "heart-outline" : "heart";
+                    icon.style.color = icon.name === "heart" ? "#f14343ff" : "white";
+                    return;
+                }
+                window.location.href = `details.html?id=${annonce.id}`;
+            });
             cards.appendChild(card);
         });
     } catch (err) {
@@ -230,26 +249,50 @@ async function loadAnnonces() {
     }
 }
 
-// Suppression de la fonction showDetails devenue inutile
-
-// Profil
-editProfileBtn.addEventListener('click', () => {
-    usernameInput.disabled = false;
-    addressInput.disabled = false;
-    saveProfileBtn.classList.remove('hidden');
-    editProfileBtn.classList.add('hidden');
-});
-
-saveProfileBtn.addEventListener('click', async () => {
-    usernameInput.disabled = true;
-    addressInput.disabled = true;
-    saveProfileBtn.classList.add('hidden');
-    editProfileBtn.classList.remove('hidden');
-    alert("Profil mis à jour !");
-});
-
 // Search
-searchBar.addEventListener("input",() => searchTab.classList.remove("hidden"));
+searchBar.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase();
+    if (query === "") {
+        searchTab.classList.add("hidden");
+        return;
+    }
+    
+    searchTab.classList.remove("hidden");
+    // On suppose que la liste des annonces est déjà chargée en mémoire ou re-fetchée
+    // Pour simplifier, on filtre une version globale ou on refetch
+    // Ici on filtre directement les annonces
+    filterAnnonces(query);
+});
+
+async function filterAnnonces(query) {
+    const { data: annonces } = await supabase.from('annonces').select('*');
+    const filtered = annonces.filter(a => 
+        (a.title && a.title.toLowerCase().includes(query)) || 
+        (a.location && a.location.toLowerCase().includes(query)) ||
+        (a.price && a.price.toString().includes(query))
+    );
+
+    const resultContainer = document.getElementById('searchTab');
+    // On recrée la structure de base si nécessaire
+    resultContainer.innerHTML = `
+        <div class="flex justify-between items-center border-b-2 border-gray-400 pb-3">
+            <h1 class="font-bold text-lg">Resultat</h1>
+            <button class="text-3xl" id="closeBtn">&times;</button>
+        </div>
+    `;
+    
+    // On doit ré-attacher l'écouteur sur le nouveau bouton closeBtn
+    document.getElementById('closeBtn').addEventListener("click", () => searchTab.classList.add("hidden"));
+    
+    filtered.slice(0, 5).forEach(a => {
+        const div = document.createElement('div');
+        div.className = "flex justify-between items-center p-3 mt-2 hover:bg-blue-50 rounded-lg cursor-pointer";
+        div.innerHTML = `<h2 class="font-medium text-xl">${a.title} - ${a.location}</h2><ion-icon name="arrow-forward-outline"></ion-icon>`;
+        div.onclick = () => window.location.href = `details.html?id=${a.id}`;
+        resultContainer.appendChild(div);
+    });
+}
+
 closeBtn.addEventListener("click", () => searchTab.classList.add("hidden"));
 
 // Init

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - Domis</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <header class="p-5 lg:px-40 flex justify-between items-center bg-white shadow-sm">
+        <h1 class="text-3xl font-black"><a href="index.html">Domis<span class="text-blue-500">.</span></a></h1>
+        <a href="index.html" class="text-gray-600">
+            <ion-icon name="arrow-back" class="text-2xl font-bold"></ion-icon>
+        </a>
+    </header>
+
+    <main class="p-10 lg:px-40">
+        <div class="bg-white p-10 rounded-3xl max-w-2xl mx-auto shadow-lg mb-10">
+            <h2 class="text-2xl font-bold mb-5">Mon Profil</h2>
+            <!-- ... contenu profil ... -->
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                    <img src="https://via.placeholder.com/100" class="w-20 h-20 rounded-full" id="profilePic">
+                    <button id="editProfileBtn" class="text-blue-500">
+                        <ion-icon name="create" class="text-2xl font-bold"></ion-icon>
+                    </button>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700">Username</label>
+                    <input type="text" id="username" class="w-full p-2 border rounded-lg" disabled>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700">Adresse</label>
+                    <input type="text" id="address" class="w-full p-2 border rounded-lg" disabled>
+                </div>
+            </div>
+            <button id="saveProfileBtn" class="hidden mt-5 w-full bg-green-500 text-white font-bold p-3 rounded-lg">Sauvegarder</button>
+        </div>
+
+        <div class="bg-white p-10 rounded-3xl max-w-4xl mx-auto shadow-lg">
+            <h2 class="text-2xl font-bold mb-5">Mes Annonces</h2>
+            <div id="myAdsContainer" class="flex flex-col gap-4">
+                <!-- Annonces chargées ici -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modale Création/Modification Annonce -->
+    <div id="postModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 sm:p-10 rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold mb-5">Modifier l'annonce</h2>
+            <input type="text" id="postTitle" placeholder="Titre" class="w-full p-3 border rounded-lg mb-3">
+            <input type="number" id="postPrice" placeholder="Loyer (Ar)" class="w-full p-3 border rounded-lg mb-3">
+            <input type="text" id="postLocation" placeholder="Quartier" class="w-full p-3 border rounded-lg mb-3">
+            <div class="flex gap-2 mb-3">
+                <input type="text" id="postSize" placeholder="Taille (m²)" class="w-1/2 p-3 border rounded-lg">
+                <input type="number" id="postRooms" placeholder="Salles" class="w-1/2 p-3 border rounded-lg">
+            </div>
+            <label class="block mb-2 text-sm font-bold text-gray-700">Image principale</label>
+            <input type="file" id="postImage" accept="image/*" class="w-full p-3 border rounded-lg mb-3">
+            <button id="submitPostBtn" class="w-full bg-blue-400 text-white font-bold p-3 rounded-lg">Enregistrer</button>
+            <button onclick="document.getElementById('postModal').classList.add('hidden'); document.body.style.overflow='auto'" class="mt-3 w-full text-gray-500">
+                <ion-icon name="close-circle" class="text-2xl font-bold"></ion-icon>
+            </button>
+        </div>
+    </div>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script type="module" src="profile.js"></script>
+</body>
+</html>
