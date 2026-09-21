@@ -11,6 +11,8 @@ const profileModal = document.getElementById('profileModal');
 
 // ... (existing code: myAdsContainer, etc.)
 
+let currentProfile = {};
+
 // Charger les données du profil
 async function loadProfile() {
     const { data: { user } } = await supabase.auth.getUser();
@@ -23,6 +25,7 @@ async function loadProfile() {
         .single();
 
     if (profile) {
+        currentProfile = profile;
         document.getElementById('profilePic').src = profile.avatar_url || '';
         const displayName = document.getElementById('displayName');
         const displayLocation = document.getElementById('displayLocation');
@@ -43,6 +46,12 @@ async function loadProfile() {
 // Ouvrir le modal
 if (openEditModalBtn) {
     openEditModalBtn.addEventListener('click', () => {
+        if (currentProfile) {
+            document.getElementById('editName').value = currentProfile.full_name || '';
+            document.getElementById('editLocation').value = currentProfile.address || '';
+            document.getElementById('editPhone').value = currentProfile.phone || '';
+            document.getElementById('editBirth').value = currentProfile.birth_date || '';
+        }
         if (profileModal) profileModal.classList.remove('hidden');
     });
 }

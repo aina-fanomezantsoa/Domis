@@ -22,6 +22,7 @@ const profileModal = document.getElementById('profileModal');
 // Suppression des variables profile supprimées du HTML
 
 let isLoginMode = true;
+let editingAnnonceId = null; // Déclaration de la variable manquante
 
 // Fonction pour verrouiller/déverrouiller le scroll
 function setScrollLock(locked) {
